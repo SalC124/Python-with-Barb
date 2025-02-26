@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 import math
 
-from numpy import double, var
+from numpy import double
 
 plt.gca().set_aspect("equal", adjustable="box")
 plt.xlabel("distance (m)")
@@ -27,6 +27,20 @@ def toComponents(direction, magnitude):
     y_component = magnitude * math.sin(math.radians(direction))
 
     return x_component, y_component
+
+
+def determineDrag(**kwargs):
+    variables = {
+        "drag_coefficient": {
+            "sphere": 0.47,
+            "half-sphere": 0.42,
+            "cone": 0.50,
+            "cube": 1.05,
+        },
+        "density": 0,
+        "velocity": 0,
+        "referenceArea": 0,
+    }
 
 
 XDistanceIntegrator = Integrator()
@@ -123,3 +137,9 @@ ballySticksTime(
     xAccel=((double)(input("x acceleration: "))),
 )
 plt.show()
+
+
+# part 3
+print("\npart 3")
+area = math.pi * (0.5**2)
+print(area)
