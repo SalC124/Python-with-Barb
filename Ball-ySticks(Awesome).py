@@ -29,24 +29,33 @@ def toComponents(direction, magnitude):
     return x_component, y_component
 
 
-def determineDrag(**kwargs):
-    variables = {
-        "drag_coefficient": {
+class Drag:
+    variables = {"density": 0, "area": 0.0, "Cd": 0.0}
+
+    def values(self, **kwargs):
+        dragCoefficients = {
             "sphere": 0.47,
             "half-sphere": 0.42,
             "cone": 0.50,
             "cube": 1.05,
-        },
-        "density": 0,
-        "velocity": 0,
-        "referenceArea": 0,
-    }
+        }
+        for index, value in kwargs.items():
+            self.variables[index] = value
+        self.variables["Cd"] = dragCoefficients.get(str(kwargs.get("drag_coefficient")))
+
+    def determineDrag(self, velocity):
+        return (
+            self.variables["Cd"]
+            * (self.variables["density"] * ((velocity**2)) / 2)
+            * self.variables["area"]
+        )
 
 
 XDistanceIntegrator = Integrator()
 XVeloIntegrator = Integrator()
 YDistanceIntegrator = Integrator()
 YVeloIntegrator = Integrator()
+Dragon = Drag()
 
 
 def ballySticksTime(**kwargs):
@@ -66,6 +75,7 @@ def ballySticksTime(**kwargs):
         "yVelo0": 0,
         "yVelo": 0,
         "yAccel": -9.8,
+        "drag": False,
         "pause": 0.05,
         "color": "b",
     }
@@ -87,11 +97,16 @@ def ballySticksTime(**kwargs):
     if kwargs.get("yVelo0") is None:
         variables["yVelo0"] = variables["yVelo"]
 
+    if variables["drag"] == True:
+        Dragon.values(drag_coefficient="sphere", density=1.225, area=1)
+
     while variables["yDistance"] >= 0:
         plt.scatter(
             variables["xDistance"], variables["yDistance"], s=10, c=variables["color"]
         )
         plt.pause(variables["pause"])
+        if variables["drag"] == True:
+            variables["xAccel"] = Dragon.determineDrag(variables["xVelo"])
 
         variables["xDistance"] = XDistanceIntegrator.calc(variables["xVelo"])
         variables["xVelo"] = (
@@ -141,5 +156,13 @@ plt.show()
 
 # part 3
 print("\npart 3")
-area = math.pi * (0.5**2)
-print(area)
+
+ballySticksTime(
+    angle=((double)(input("angle of elevation (degrees): "))),
+    magnitude=((double)(input("magnitude: "))),
+    drag=True,
+)
+plt.show()
+
+# Dragon.values(drag_coefficient="sphere", density=1.225, area=1)
+# print(Dragon.variables)

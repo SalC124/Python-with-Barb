@@ -8,7 +8,8 @@ plt.grid(True)
 
 sum = 0
 sum2 = 0
-velocity = 0
+sum3 = 0
+velocity = 2
 acceleration = 2
 
 
@@ -24,6 +25,20 @@ def integrationStation(x):
     return sum2
 
 
+def bruh(x):
+    global sum3
+    sum3 = sum3 + x
+    return sum3
+
+
+print("\nprogram 1")
+for t in range(10):
+    plt.scatter(t, sum3, s=5, c="b")
+    plt.pause(0.25)
+
+    distance = bruh(velocity)
+
+print("\nprogram 2")
 for t in range(10):
     plt.scatter(t, sum, s=5, c="r")
     plt.pause(0.25)
