@@ -30,7 +30,7 @@ def toComponents(direction, magnitude):
 
 
 class Drag:
-    variables = {"density": 0, "area": 0.0, "Cd": 0.0}
+    variables = {"density": 0, "area": 0.0, "Cd": 0.0, "mass": 0.0}
 
     def values(self, **kwargs):
         dragCoefficients = {
@@ -45,9 +45,16 @@ class Drag:
 
     def determineDrag(self, velocity):
         return (
-            self.variables["Cd"]
-            * (self.variables["density"] * ((velocity**2)) / 2)
-            * self.variables["area"]
+            (
+                self.variables["Cd"]
+                * (
+                    self.variables["density"]
+                    * ((velocity**2) * self.variables["area"])
+                    / 2
+                )
+            )
+            / self.variables["mass"]
+            * -1
         )
 
 
@@ -98,7 +105,7 @@ def ballySticksTime(**kwargs):
         variables["yVelo0"] = variables["yVelo"]
 
     if variables["drag"] == True:
-        Dragon.values(drag_coefficient="sphere", density=1.225, area=1)
+        Dragon.values(drag_coefficient="sphere", density=1.225, area=0.785, mass=100)
 
     while variables["yDistance"] >= 0:
         plt.scatter(
